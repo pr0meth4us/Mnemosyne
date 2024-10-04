@@ -10,7 +10,7 @@ interface ChatFile {
 }
 
 function formatContent(content: string): string {
-    const formatTikTokLink = (match: string, p1: string) => {
+    const formatTikTokLink = (match: string) => {
         return `<div class="mt-2">
             <a href="${match}" target="_blank" rel="noopener noreferrer" class="block">
                 <div class="bg-gray-800 p-2 rounded-lg flex items-center">
@@ -46,12 +46,14 @@ function formatContent(content: string): string {
 
 export default function ExtractText(
     selectedList: string[],
-    json: { [key: string]: any },
+    json: { [key: string]: string },
     me: string
 ): ChatFile[] {
     const results: ChatFile[] = [];
 
     for (let i = 0; i < selectedList.length; i++) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         const chatHistory = json?.['Direct Messages']?.['Chat History']?.['ChatHistory']?.[selectedList[i]];
 
         if (chatHistory) {
