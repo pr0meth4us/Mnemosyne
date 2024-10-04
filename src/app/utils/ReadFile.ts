@@ -1,4 +1,4 @@
-export default function ReadFile(file: File): Promise<{ json: string; people: string }> {
+export default function ReadFile(file: File): Promise<{ json: string; people: string; me: string }> {
     return new Promise((resolve) => {
         const reader = new FileReader();
 
@@ -7,15 +7,16 @@ export default function ReadFile(file: File): Promise<{ json: string; people: st
                 try {
                     const json = JSON.parse(reader.result as string);
                     const chatList = json['Direct Messages']?.['Chat History']?.['ChatHistory'];
+                    const me = json['Profile']['Profile Information']['ProfileMap']['userName'];
 
                     const result = chatList
                         ? { chatList: Object.keys(chatList) }
                         : { chatList: [] };
 
-                    resolve({ json, people: JSON.stringify(result) });
+                    resolve({ json, people: JSON.stringify(result) , me});
+
                 } catch (error) {
                     console.error(`Error parsing JSON: ${error}`);
-                    // resolve({ json: null, people: '' });
                 }
             } else if (file.type === 'text/plain') {
                 console.log('Plain text file detected');

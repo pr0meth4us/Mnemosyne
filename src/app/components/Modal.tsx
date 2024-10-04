@@ -6,7 +6,7 @@ import ExtractText from "@/app/utils/ExtractText"; // Make sure you have this ut
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
-    result: { people:string, json:string };
+    result: { people:string, json:string, me:string };
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result }) => {
@@ -32,12 +32,24 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result }) => {
     const deselectAllChats = () => {
         setSelectedChats([]);
     };
+    const handleDownload = (htmlContent: string) => {
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'chat_history.html';
+        link.click();
+    };
 
     const handleNext = () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
-        const text = ExtractText(selectedChats, result.json);
-        console.log(text)
+        const text = ExtractText(selectedChats, result.json, result.me);
+        if (text){
+            handleDownload(text)
+        }
+        console.log(result.me)
+
+
     };
 
     if (content) {

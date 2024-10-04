@@ -11,9 +11,10 @@ export default function Uploader() {
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [modalContent, setModalContent] = useState<{ people: string; json: string }>({
+    const [modalContent, setModalContent] = useState<{ people: string; json: string; me: string}>({
         people: '',
         json: '',
+        me: ''
     });
     const [isModalOpen, setModalOpen] = useState(false);
 
