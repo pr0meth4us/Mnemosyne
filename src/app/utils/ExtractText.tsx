@@ -103,6 +103,17 @@ export default function ExtractText(
             ${chatContent}
         </div>
     </div>
+    <footer class="row-start-3 flex gap-6 flex-wrap items-center justify-center">
+                <a
+                    class="flex items-center gap-2 hover:underline hover:underline-offset-4"
+                    href="https://github.com/pr0meth4us"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    © mnemosyne by Pr0meth4us
+                </a>
+
+            </footer>
 </body>
 </html>`;
 
