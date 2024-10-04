@@ -95,7 +95,7 @@ export default function ExtractText(
     <div class="container mx-auto  shadow-lg bg-dark-card">
         <header class="border-b border-gray-700 p-4">
             <div class="flex flex-col items-center">
-                <img src="https://raw.githubusercontent.com/pr0meth4us/Mnemosyne/907eb6b438693b9f281afa33b559adecb3c49556/public/images/mnemosyne.svg?token=BCVN6TXZSJT4ACNPV7JNLHTHAA5HS" alt="Mnemosyne logo" class="w-32 h-auto mb-2" />
+                <img src="https://raw.githubusercontent.com/pr0meth4us/svg/7015de0542e26877d6b47d183599b634d4b9d079/mnemosyne.svg" alt="Mnemosyne logo" class="w-32 h-auto mb-2" />
                 <h1 class="text-xl font-semibold">${selectedList[i]}</h1>
             </div>
         </header>
