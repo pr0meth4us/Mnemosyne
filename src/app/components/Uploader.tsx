@@ -107,7 +107,7 @@ export default function Uploader() {
                                         <span className="font-semibold">Click to upload</span> or drag and drop
                                     </p>
                                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                                        SVG, PNG, JPG or GIF (MAX. 800x400px)
+                                        JSON or TXT (TikTok formatted)
                                     </p>
                                 </>
                             ) : (
@@ -127,6 +127,7 @@ export default function Uploader() {
                             id="dropzone-file"
                             type="file"
                             className="hidden"
+                            accept=".json,.txt"
                             onChange={handleFileChange}
                         />
                     </label>
