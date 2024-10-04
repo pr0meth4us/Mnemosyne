@@ -34,7 +34,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result }) => {
     };
 
     const handleNext = () => {
-        // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         const text = ExtractText(selectedChats, result.json);
         console.log(text)
     };
