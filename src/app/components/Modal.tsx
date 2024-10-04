@@ -34,6 +34,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result }) => {
     };
 
     const handleNext = () => {
+        // @ts-ignore
         const text = ExtractText(selectedChats, result.json);
         console.log(text)
     };
