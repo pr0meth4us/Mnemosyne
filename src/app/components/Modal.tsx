@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
-import { Checkbox } from "@nextui-org/react";
-import { cn, Button } from "@nextui-org/react";
-import ExtractText from "@/app/utils/ExtractText"; // Make sure you have this utility available
+import { Checkbox, Button } from "@nextui-org/react";
+import { cn } from "@nextui-org/react";
+import ExtractText from "@/app/utils/ExtractText";
 
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
-    result: { people:string, json:string, me:string };
+    result: { people: string, json: string, me: string };
+}
+
+interface ChatFile {
+    filename: string;
+    content: string;
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result }) => {
     const [selectedChats, setSelectedChats] = useState<string[]>([]);
+    const [chatFiles, setChatFiles] = useState<ChatFile[]>([]);
+    const [showDownloadButtons, setShowDownloadButtons] = useState(false);
 
     if (!isOpen) return null;
 
@@ -32,24 +39,25 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result }) => {
     const deselectAllChats = () => {
         setSelectedChats([]);
     };
-    const handleDownload = (htmlContent: string) => {
-        const blob = new Blob([htmlContent], { type: 'text/html' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'chat_history.html';
-        link.click();
-    };
 
     const handleNext = () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
-        const text = ExtractText(selectedChats, result.json, result.me);
-        if (text){
-            handleDownload(text)
-        }
-        console.log(result.me)
+        const files = ExtractText(selectedChats, result.json, result.me);
+        setChatFiles(files);
+        setShowDownloadButtons(true);
+    };
 
-
+    const handleDownload = (file: ChatFile) => {
+        const blob = new Blob([file.content], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     };
 
     if (content) {
@@ -81,61 +89,90 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result }) => {
                     </button>
                 </div>
                 <div className="p-4 md:p-5">
-                    <h3 className="font-semibold text-md mt-4">Chat History with:</h3>
-                    <ul className="mt-4 space-y-3">
-                        <li  className="mt-1 text-white">
-
-                            <Checkbox
-                                aria-label="Select All Chats"
-                                classNames={{
-                                    base: cn(
-                                        "items-center justify-start text-white",
-                                        "cursor-pointer rounded-lg gap-2 p-4 border-2 border-transparent",
-                                    ),
-                                    label: "w-full text-white",
-                                }}
-                                isSelected={selectedChats.length === chatList.length && chatList.length > 0}
-                                onValueChange={() => {
-                                    if (selectedChats.length === chatList.length) {
-                                        deselectAllChats();
-                                    } else {
-                                        selectAllChats();
-                                    }
-                                }}
-                            >
-                                {selectedChats.length === chatList.length ? "Deselect All" : "Select All"}
-                            </Checkbox>
-                        </li>
-                    </ul>
-                    <ul className="my-4 space-y-3">
-                        {chatList.map((chat: string, index: number) => (
-                            <li key={index} className="mt-1 text-white">
-                                <Checkbox
-                                    aria-label={chat}
-                                    classNames={{
-                                        base: cn(
-                                            "items-center justify-start text-white",
-                                            "cursor-pointer rounded-lg gap-2 p-4 border-2 border-transparent",
-                                        ),
-                                        label: "w-full text-white",
-                                    }}
-                                    isSelected={selectedChats.includes(chat)}
-                                    onValueChange={() => handleChatSelect(chat)}
+                    {!showDownloadButtons ? (
+                        <>
+                            <h3 className="font-semibold text-md mt-4">Chat History with:</h3>
+                            <ul className="mt-4 space-y-3">
+                                <li className="mt-1 text-white">
+                                    <Checkbox
+                                        aria-label="Select All Chats"
+                                        classNames={{
+                                            base: cn(
+                                                "items-center justify-start text-white",
+                                                "cursor-pointer rounded-lg gap-2 p-4 border-2 border-transparent",
+                                            ),
+                                            label: "w-full text-white",
+                                        }}
+                                        isSelected={selectedChats.length === chatList.length && chatList.length > 0}
+                                        onValueChange={() => {
+                                            if (selectedChats.length === chatList.length) {
+                                                deselectAllChats();
+                                            } else {
+                                                selectAllChats();
+                                            }
+                                        }}
+                                    >
+                                        {selectedChats.length === chatList.length ? "Deselect All" : "Select All"}
+                                    </Checkbox>
+                                </li>
+                            </ul>
+                            <ul className="my-4 space-y-3">
+                                {chatList.map((chat: string, index: number) => (
+                                    <li key={index} className="mt-1 text-white">
+                                        <Checkbox
+                                            aria-label={chat}
+                                            classNames={{
+                                                base: cn(
+                                                    "items-center justify-start text-white",
+                                                    "cursor-pointer rounded-lg gap-2 p-4 border-2 border-transparent",
+                                                ),
+                                                label: "w-full text-white",
+                                            }}
+                                            isSelected={selectedChats.includes(chat)}
+                                            onValueChange={() => handleChatSelect(chat)}
+                                        >
+                                            {chat.replace("Chat History with ", "").replace(":", "")}
+                                        </Checkbox>
+                                    </li>
+                                ))}
+                            </ul>
+                            <div className="flex space-x-2">
+                                <Button
+                                    variant="flat"
+                                    className="bg-foreground text-background px-4 py-2 rounded"
+                                    onClick={handleNext}
                                 >
-                                    {chat.replace("Chat History with ", "").replace(":", "")}
-                                </Checkbox>
-                            </li>
-                        ))}
-                    </ul>
-                    <div className="flex space-x-2">
-                        <Button
-                            variant="flat"
-                            className="bg-foreground text-background px-4 py-2 rounded"
-                            onClick={handleNext}
-                        >
-                            Next
-                        </Button>
-                    </div>
+                                    Next
+                                </Button>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <h3 className="font-semibold text-md mt-4">Download Chat Histories:</h3>
+                            <ul className="my-4 space-y-3">
+                                {chatFiles.map((file, index) => (
+                                    <li key={index} className="mt-1">
+                                        <Button
+                                            variant="flat"
+                                            className="bg-foreground text-background px-4 py-2 rounded w-full"
+                                            onClick={() => handleDownload(file)}
+                                        >
+                                            Download {file.filename}
+                                        </Button>
+                                    </li>
+                                ))}
+                            </ul>
+                            <div className="flex space-x-2">
+                                <Button
+                                    variant="flat"
+                                    className="bg-foreground text-background px-4 py-2 rounded"
+                                    onClick={() => setShowDownloadButtons(false)}
+                                >
+                                    Back
+                                </Button>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         );
