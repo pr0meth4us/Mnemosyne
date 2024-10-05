@@ -172,6 +172,7 @@ export default function Uploader() {
                 isOpen={isModalOpen}
                 onClose={closeModal}
                 result={modalContent}
+                filename={uploadedFile?.name || "user_data_tiktok.json"}
             />
         </div>
     );
