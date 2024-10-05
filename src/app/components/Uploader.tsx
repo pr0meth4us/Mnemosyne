@@ -68,7 +68,15 @@ export default function Uploader() {
     };
 
     return (
-        <div>
+
+        <main className="flex flex-col gap-8 row-start-2 items-center w-full">
+            <Image
+                src="/images/mnemosyne-dirt.svg"
+                alt="Next.js logo"
+                width={180}
+                height={38}
+                onClick={handleUploadClick}
+            />
             {!isModalOpen && (
                 <div className={`flex flex-col row-start-2 items-center`}>
                     <div className="flex items-center flex-col sm:flex-row w-full">
@@ -174,6 +182,6 @@ export default function Uploader() {
                 result={modalContent}
                 filename={uploadedFile?.name || "user_data_tiktok.json"}
             />
-        </div>
+        </main>
     );
 }
