@@ -1,3 +1,6 @@
+import ChatHtml from "@/app/utils/ChatHtml";
+import ReactDOMServer from 'react-dom/server';
+
 interface ChatHistory {
     Date: string;
     From: string;
@@ -23,10 +26,12 @@ function formatContent(content: string): string {
         </div>`;
     };
 
+
     const formatImageLink = (match: string) => {
+        const cleanedMatch = match.replace(/^\[|\]$/g, '');
         return `<div class="mt-2">
-            <a href="${match}" target="_blank" rel="noopener noreferrer">
-                <img src="${match}" alt="Shared image" class="max-w-full h-auto rounded-lg shadow-md" />
+            <a href="${cleanedMatch}" target="_blank" rel="noopener noreferrer">
+                <img src="${cleanedMatch}" alt="Shared image" class="max-w-full h-auto rounded-lg shadow-md" />
             </a>
         </div>`;
     };
@@ -69,62 +74,7 @@ export default function ExtractText(
                 </div>
             `).join('');
 
-            const chatHtml = `
-<!DOCTYPE html>
-<html lang="en" class="h-full">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'dark-bg': '#1e1e2f',
-                        'dark-card': '#2e2e42',
-                    },
-                    fontFamily: {
-                        'sans': ['Jost', 'sans-serif'],
-                    },
-                }
-            },
-            plugins: [require("daisyui")],
-        }
-    </script>
-    <style>
-        body {
-            font-family: 'Jost', sans-serif;
-        }
-    </style>
-    <title>${selectedList[i]}</title>
-</head>
-<body class="bg-dark-bg text-white h-full flex flex-col">
-    <div class="flex-grow flex flex-col overflow-hidden">
-        <header class="border-b border-gray-700 p-4 flex-shrink-0">
-            <div class="flex flex-col items-center">
-                <img src="https://raw.githubusercontent.com/pr0meth4us/svg/7015de0542e26877d6b47d183599b634d4b9d079/mnemosyne.svg" alt="Mnemosyne logo" class="w-20 h-auto mb-2" />
-                <h1 class="text-xl font-semibold">${name}</h1>
-            </div>
-        </header>
-        <div class="mx-auto flex-grow overflow-y-auto p-4 space-y-4">
-            ${chatContent}
-        </div>
-    </div>
-    <footer class="flex-shrink-0 p-4 flex gap-6 flex-wrap items-center justify-center border-t border-gray-700">
-        <a
-            class="flex items-center gap-2 hover:underline hover:underline-offset-4"
-            href="https://github.com/pr0meth4us"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-            © mnemosyne by Pr0meth4us
-        </a>
-    </footer>
-</body>
-</html>`;
+            const chatHtml = ReactDOMServer.renderToStaticMarkup(<ChatHtml name={name} chatContent={chatContent} />);
 
             results.push({
                 filename: `${selectedList[i]}.html`,
