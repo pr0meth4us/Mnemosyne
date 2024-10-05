@@ -1,9 +1,6 @@
 FROM node:18
 
-WORKDIR /app
-
-COPY package*.json ./
-
+# Install necessary system dependencies for Puppeteer
 RUN apt-get update && apt-get install -y \
     wget \
     ca-certificates \
@@ -22,15 +19,27 @@ RUN apt-get update && apt-get install -y \
     libxdamage1 \
     libxrandr2 \
     xdg-utils \
+    libdrm2 \
+    libgbm1 \
+    libxshmfence1 \
     --no-install-recommends \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Set working directory
+WORKDIR /app
+
+# Copy package files and install dependencies
+COPY package*.json ./
 RUN npm install
 
+# Copy the rest of the application files
 COPY . .
 
+# Build the application
 RUN npm run build
 
+# Expose the port for the app
 EXPOSE 3000
 
+# Start the app
 CMD ["npm", "start"]
