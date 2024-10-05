@@ -62,7 +62,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result }) => {
     const handleDownloadPDF = async (file: ChatFile) => {
         setIsMakingPDF(true);
         try {
-            const response = await fetch('https://c43119d5-c421-49ff-a2db-5864a86a3749.railway.app/generate-pdf', {
+            const response = await fetch('https://melodious-flow.railway.app/generate-pdf', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ htmlContent: file.content, name: file.filename })
