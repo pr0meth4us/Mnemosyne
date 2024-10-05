@@ -15,6 +15,7 @@ const ChatHtml: React.FC<ChatHtmlProps> = (props) => {
                 <meta charSet="UTF-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+                {/* eslint-disable-next-line @next/next/no-sync-scripts */}
                 <script src="https://cdn.tailwindcss.com"></script>
                 <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
                 <script>
