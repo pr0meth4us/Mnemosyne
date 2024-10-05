@@ -33,26 +33,26 @@ const ChatHtml: React.FC<ChatHtmlProps> = (props) => {
                             },
                             plugins: [require("daisyui")],
                         }
-                        `}
+                    `}
                 </script>
                 <style>
                     {`
                         body {
                             font-family: 'Jost', sans-serif;
                         }
-                        `}
+                    `}
                 </style>
                 <title>{name}</title>
             </head>
-            <body className="bg-dark-bg text-white h-full flex flex-col">
-            <div className="flex-grow flex flex-col overflow-hidden">
+            <body className="bg-dark-bg text-white flex flex-col min-h-screen">
+            <div className="flex-grow flex flex-col">
                 <header className="border-b border-gray-700 p-4 flex-shrink-0">
                     <div className="flex flex-col items-center">
                         <img src="https://raw.githubusercontent.com/pr0meth4us/svg/7015de0542e26877d6b47d183599b634d4b9d079/mnemosyne.svg" alt="Mnemosyne logo" className="w-20 h-auto mb-2" />
                         <h1 className="text-xl font-semibold">{name}</h1>
                     </div>
                 </header>
-                <div className="mx-auto flex-grow overflow-y-auto p-4 space-y-4">
+                <div className="mx-auto flex-grow p-4 space-y-4">
                     <div dangerouslySetInnerHTML={{ __html: chatContent }} />
                 </div>
             </div>

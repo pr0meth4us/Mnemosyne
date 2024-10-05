@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Checkbox, Button } from "@nextui-org/react";
+import { Tooltip, Checkbox, Button } from "@nextui-org/react";
 import { cn } from "@nextui-org/react";
 import ExtractText from "@/app/utils/ExtractText";
 
@@ -18,6 +18,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result }) => {
     const [selectedChats, setSelectedChats] = useState<string[]>([]);
     const [chatFiles, setChatFiles] = useState<ChatFile[]>([]);
     const [showDownloadButtons, setShowDownloadButtons] = useState(false);
+    const [isMakingPDF, setIsMakingPDF] = useState(false);
 
     if (!isOpen) return null;
 
@@ -41,8 +42,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result }) => {
     };
 
     const handleNext = () => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
         const files = ExtractText(selectedChats, result.json, result.me);
         setChatFiles(files);
         setShowDownloadButtons(true);
@@ -60,6 +59,33 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result }) => {
         URL.revokeObjectURL(url);
     };
 
+    const handleDownloadPDF = async (file: ChatFile) => {
+        setIsMakingPDF(true);
+        try {
+            const response = await fetch('/api/convertHtmlToPdf', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ htmlContent: file.content, name: file.filename })
+            });
+            if (!response.ok) {
+                throw new Error('Failed to generate PDF');
+            }
+            const pdfBlob = await response.blob();
+            const url = URL.createObjectURL(pdfBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'document.pdf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error downloading PDF:', error);
+        } finally {
+            setIsMakingPDF(false);
+        }
+    };
+
     if (content) {
         const jsonData = JSON.parse(content);
         const chatList = jsonData.chatList || [];
@@ -74,7 +100,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result }) => {
                         onClick={onClose}
                         type="button"
                         className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                        data-modal-toggle="crypto-modal"
                     >
                         <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                             <path
@@ -151,18 +176,36 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result }) => {
                             <h3 className="font-semibold text-md mt-4">Download Chat Histories:</h3>
                             <ul className="my-4 space-y-3">
                                 {chatFiles.map((file, index) => (
-                                    <li key={index} className="mt-1">
+                                    <li key={index} className="mt-1 flex gap-2 w-full relative">
                                         <Button
                                             variant="flat"
-                                            className="bg-foreground text-background px-4 py-2 rounded w-full"
+                                            className="bg-foreground text-background px-4 py-2 rounded w-full text-center flex-grow"
                                             onClick={() => handleDownload(file)}
                                         >
-                                            Download {file.filename}
+                                            {file.filename}.html
                                         </Button>
+
+                                        <Tooltip
+                                            key="default"
+                                            color="foreground"
+                                            placement="right"
+                                            content={isMakingPDF ? "PDF may take a while to process" : ""}
+                                            isOpen={isMakingPDF}
+
+                                        >
+                                            <Button
+                                                variant="flat"
+                                                className="bg-foreground text-background px-4 py-2 rounded w-full text-center flex-grow"
+                                                onClick={() => handleDownloadPDF(file)}
+                                                isLoading={isMakingPDF}
+                                            >
+                                                {file.filename}.pdf
+                                            </Button>
+                                        </Tooltip>
                                     </li>
                                 ))}
                             </ul>
-                            <div className="flex space-x-2">
+                            <div className="flex justify-end w-full space-x-2">
                                 <Button
                                     variant="flat"
                                     className="bg-foreground text-background px-4 py-2 rounded"
