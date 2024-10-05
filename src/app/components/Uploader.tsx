@@ -79,7 +79,7 @@ export default function Uploader() {
                             onClick={handleUploadClick}
                         >
                             <Image
-                                className={`transition-transform duration-500 ${
+                                className={`transition-transform fill-divine duration-500 ${
                                     isUploaderVisible ? 'rotate-180' : ''
                                 }`}
                                 src="https://nextjs.org/icons/vercel.svg"
@@ -104,7 +104,7 @@ export default function Uploader() {
                                     isDragging ? 'bg-gray-200 dark:bg-gray-600' : ''
                                 }`}
                             >
-                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                <div className="text-divine flex flex-col items-center justify-center pt-5 pb-6">
                                     {!uploadedFile ? (
                                         <>
                                             <svg

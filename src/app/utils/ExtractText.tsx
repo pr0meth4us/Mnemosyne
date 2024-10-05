@@ -52,6 +52,7 @@ export default function ExtractText(
     const results: ChatFile[] = [];
 
     for (let i = 0; i < selectedList.length; i++) {
+        const name = selectedList[i].replace("Chat History with ","").replace(":","");
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
         const chatHistory = json?.['Direct Messages']?.['Chat History']?.['ChatHistory']?.[selectedList[i]];
@@ -70,10 +71,11 @@ export default function ExtractText(
 
             const chatHtml = `
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
     <script>
@@ -83,42 +85,49 @@ export default function ExtractText(
                     colors: {
                         'dark-bg': '#1e1e2f',
                         'dark-card': '#2e2e42',
-                    }
+                    },
+                    fontFamily: {
+                        'sans': ['Jost', 'sans-serif'],
+                    },
                 }
             },
             plugins: [require("daisyui")],
         }
     </script>
-    <title>Chat History with ${selectedList[i]}</title>
+    <style>
+        body {
+            font-family: 'Jost', sans-serif;
+        }
+    </style>
+    <title>${selectedList[i]}</title>
 </head>
-<body class="bg-dark-bg text-white">
-    <div class="container mx-auto  shadow-lg bg-dark-card">
-        <header class="border-b border-gray-700 p-4">
+<body class="bg-dark-bg text-white h-full flex flex-col">
+    <div class="flex-grow flex flex-col overflow-hidden">
+        <header class="border-b border-gray-700 p-4 flex-shrink-0">
             <div class="flex flex-col items-center">
-                <img src="https://raw.githubusercontent.com/pr0meth4us/svg/7015de0542e26877d6b47d183599b634d4b9d079/mnemosyne.svg" alt="Mnemosyne logo" class="w-32 h-auto mb-2" />
-                <h1 class="text-xl font-semibold">${selectedList[i]}</h1>
+                <img src="https://raw.githubusercontent.com/pr0meth4us/svg/7015de0542e26877d6b47d183599b634d4b9d079/mnemosyne.svg" alt="Mnemosyne logo" class="w-20 h-auto mb-2" />
+                <h1 class="text-xl font-semibold">${name}</h1>
             </div>
         </header>
-        <div class="p-4 space-y-4 h-[calc(100vh-120px)] overflow-y-auto">
+        <div class="mx-auto flex-grow overflow-y-auto p-4 space-y-4">
             ${chatContent}
         </div>
     </div>
-    <footer class="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-                <a
-                    class="flex items-center gap-2 hover:underline hover:underline-offset-4"
-                    href="https://github.com/pr0meth4us"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    © mnemosyne by Pr0meth4us
-                </a>
-
-            </footer>
+    <footer class="flex-shrink-0 p-4 flex gap-6 flex-wrap items-center justify-center border-t border-gray-700">
+        <a
+            class="flex items-center gap-2 hover:underline hover:underline-offset-4"
+            href="https://github.com/pr0meth4us"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            © mnemosyne by Pr0meth4us
+        </a>
+    </footer>
 </body>
 </html>`;
 
             results.push({
-                filename: `chat_history_${selectedList[i]}.html`,
+                filename: `${selectedList[i]}.html`,
                 content: chatHtml
             });
         }
