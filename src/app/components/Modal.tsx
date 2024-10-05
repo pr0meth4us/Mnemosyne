@@ -62,12 +62,11 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result }) => {
     const handleDownloadPDF = async (file: ChatFile) => {
         setIsMakingPDF(true);
         try {
-            const response = await fetch('https://pdf-generator-production-9673.up.railway.app/generate-pdf', {
+            const response = await fetch('/api/convertHtmlToPdf', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ htmlContent: file.content, name: file.filename })
             });
-
             if (!response.ok) {
                 throw new Error('Failed to generate PDF');
             }
