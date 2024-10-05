@@ -60,6 +60,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         await browser.close();
     } catch (error) {
         console.error('Error generating PDF:', error);
-        return res.status(500).json({ error: 'Failed to generate PDF', details: error.message });
+        return res.status(500).json({ error: 'Failed to generate PDF'});
     }
 }
