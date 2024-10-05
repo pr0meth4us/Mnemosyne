@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import puppeteer from 'puppeteer';
+import { Readable } from 'stream'; // Import Readable from 'stream'
 import { pipeline } from 'stream';
 import { promisify } from 'util';
 
@@ -45,8 +46,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename=${name}`);
 
-        // Generate PDF as a stream
-        const pdfStream = await page.createPDFStream({ format: 'A4', printBackground: true });
+        // Create a PDF stream
+        const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
+
+        // Convert Buffer to Readable Stream
+        const pdfStream = new Readable();
+        pdfStream.push(pdfBuffer);
+        pdfStream.push(null); // Close the stream
 
         // Use pipeline to handle the stream, and send to the client response
         await streamPipeline(pdfStream, res);
