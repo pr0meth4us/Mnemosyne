@@ -1,11 +1,13 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import puppeteer from 'puppeteer';
+import { pipeline } from 'stream';
+import { promisify } from 'util';
+
+const streamPipeline = promisify(pipeline);
 
 export const config = {
     api: {
-        bodyParser: {
-            sizeLimit: '30mb',
-        },
+        bodyParser: false, // Disable body parsing to handle large requests via streaming
     },
 };
 
@@ -14,13 +16,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const { htmlContent, name } = req.body;
-
-    if (!htmlContent) {
-        return res.status(400).json({ error: 'HTML content is required' });
-    }
-
     try {
+        let htmlContent = '';
+        const { name } = req.query;
+
+        // Handle streamed incoming data (from a POST request body)
+        await new Promise((resolve, reject) => {
+            req.on('data', (chunk) => {
+                htmlContent += chunk.toString();
+            });
+            req.on('end', resolve);
+            req.on('error', reject);
+        });
+
+        if (!htmlContent) {
+            return res.status(400).json({ error: 'HTML content is required' });
+        }
+
+        // Launch puppeteer
         const browser = await puppeteer.launch({
             headless: true,
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
@@ -28,15 +41,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const page = await browser.newPage();
         await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename=${name}`);
-        const pdfStream = await page.pdf({ format: 'A4', printBackground: true });
-        res.end(pdfStream);
+
+        // Generate PDF as a stream
+        const pdfStream = await page.createPDFStream({ format: 'A4', printBackground: true });
+
+        // Use pipeline to handle the stream, and send to the client response
+        await streamPipeline(pdfStream, res);
+
         await browser.close();
     } catch (error) {
         console.error('Error generating PDF:', error);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
         return res.status(500).json({ error: 'Failed to generate PDF', details: error.message });
     }
 }
