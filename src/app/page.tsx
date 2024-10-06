@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Uploader from "./components/Uploader";
 
 export default function Home() {
