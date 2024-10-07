@@ -1,8 +1,17 @@
+import axios from "axios";
+
 export const formatTikTokLink = async (match: string): Promise<string> => {
     try {
         // Send a request to the server-side proxy
-        const response = await fetch(`/api/tiktok?url=${encodeURIComponent(match)}`);
-        const data = await response.json();
+        const response = await axios.get(`https://tiktok-thumbnail-production.up.railway.app/api/tiktok?url=${encodeURIComponent(match)}`, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36',
+                'Accept': 'application/json, text/plain, */*',
+            },
+        });
+
+        // Access the data directly from the response
+        const data = response.data; // No need for .json()
 
         if (!data.success) {
             throw new Error('Failed to fetch TikTok video data');
@@ -21,7 +30,7 @@ export const formatTikTokLink = async (match: string): Promise<string> => {
                 </a>
             </div>`;
     } catch (error) {
-        console.error('Error formatting TikTok link:', error);
+        console.error('Error formatting TikTok link:', error); // Improved logging
         return `
             <div class="mt-2">
                 <a href="${match}" target="_blank" rel="noopener noreferrer" class="block">
