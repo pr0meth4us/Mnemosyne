@@ -2,13 +2,6 @@ import ChatHtml from "@/app/utils/ChatHtml";
 import ReactDOMServer from 'react-dom/server';
 import formatContent from "@/app/utils/formatContent";
 
-
-interface ChatFile {
-    filename: string;
-    content: string;
-}
-
-
 const text = ({ Content, From, Date }: ChatMessage, me: string): string => {
     return `
         <div class="chat ${From !== me ? 'chat-start' : 'chat-end'}">

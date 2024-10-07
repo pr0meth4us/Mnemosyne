@@ -14,6 +14,10 @@ declare global {
         chatHistories: Record<string, ChatMessage[]>;
         me: string;
     }
+    interface ChatFile {
+        filename: string;
+        content: string;
+    }
 }
 
 export {};

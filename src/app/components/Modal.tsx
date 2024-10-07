@@ -11,11 +11,6 @@ interface ModalProps {
     filename: string;
 }
 
-interface ChatFile {
-    filename: string;
-    content: string;
-}
-
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result, filename }) => {
     const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
     const [chatFiles, setChatFiles] = useState<ChatFile[]>([]);
@@ -44,7 +39,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result, filename }) => {
     };
 
     const handleNext = async () => {
-        let files: ChatFile[] = [];
+        let files: ChatFile[];
 
         if (me) {
             files = ExtractText({ selectedUsers, chatHistories, me });

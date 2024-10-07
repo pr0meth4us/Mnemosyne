@@ -14,7 +14,7 @@ export default function formatContent(content: string): string {
 
 
     const formatImageLink = (match: string) => {
-        const cleanedMatch = match.replace(/^\[|\]$/g, '');
+        const cleanedMatch = match.replace(/^\[|]$/g, '');
         return `<div class="mt-2">
             <a href="${cleanedMatch}" target="_blank" rel="noopener noreferrer">
                 <img src="${cleanedMatch}" alt="Shared image" class="max-w-full h-auto rounded-lg shadow-md" />
