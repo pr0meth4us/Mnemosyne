@@ -17,7 +17,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result, filename }) => {
     const [showDownloadButtons, setShowDownloadButtons] = useState(false);
     const [loadingPDFs, setLoadingPDFs] = useState<{ [key: string]: boolean }>({});
     const [usernameInput, setUsernameInput] = useState(false);
-    const [username, setUsername] = useState(""); // Added missing username state
+    const [username, setUsername] = useState("");
+    const [extracting, setExtracting] = useState<boolean>(false);
 
     if (!isOpen) return null;
 
@@ -42,12 +43,15 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result, filename }) => {
         let files: ChatFile[];
 
         if (me) {
-            files = ExtractText({ selectedUsers, chatHistories, me });
+            setExtracting(true);
+            files = await ExtractText({ selectedUsers, chatHistories, me });
+            setExtracting(false);
         } else {
             setUsernameInput(true);
-            files = ExtractText({ selectedUsers, chatHistories, me });
+            setExtracting(true);
+            files = await ExtractText({ selectedUsers, chatHistories, me });
+            setExtracting(false);
             setUsernameInput(false);
-
         }
         setChatFiles(files);
         setShowDownloadButtons(true);
@@ -164,6 +168,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result, filename }) => {
                                         variant="flat"
                                         className="bg-foreground text-background px-4 py-2 rounded"
                                         onClick={handleNext}
+                                        isLoading ={extracting}
                                     >
                                         Next
                                     </Button>
@@ -238,6 +243,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result, filename }) => {
                                             variant="flat"
                                             className="bg-foreground text-background px-4 py-2 rounded"
                                             onClick={handleNext}
+                                            isLoading ={extracting}
+
                                         >
                                             Next
                                         </Button>

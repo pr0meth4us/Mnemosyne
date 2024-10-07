@@ -27,30 +27,28 @@ const text = async ({ Content, From, Date }: ChatMessage, me: string): Promise<s
     `;
 };
 
-export default function ExtractText(
+export default async function ExtractText(
     { selectedUsers, chatHistories, me }: Params
-): ChatFile[] {
+): Promise<ChatFile[]> {
     const results: ChatFile[] = [];
 
-    for (let i = 0; i < selectedUsers.length; i++) {
-        const userId = selectedUsers[i];
+    for (const userId of selectedUsers) {
         const chatContent = chatHistories[userId];
 
         if (chatContent && chatContent.length > 0) {
-            const messagesHtml = chatContent.map((msg) =>
+            const messagesHtmlPromises = chatContent.map(msg =>
                 text({ Content: msg.Content, From: msg.From, Date: msg.Date }, me)
-            ).join('');
-
+            );
+            const messagesHtml = await Promise.all(messagesHtmlPromises);
 
             const chatHtml = ReactDOMServer.renderToStaticMarkup(
-                <ChatHtml name={userId} chatContent={messagesHtml} />
+                <ChatHtml name={userId} chatContent={messagesHtml.join('')} />
             );
 
             results.push({
                 filename: `${userId.match(/with (.+?):/)?.[1]}`,
                 content: chatHtml
             });
-
         }
     }
     return results;

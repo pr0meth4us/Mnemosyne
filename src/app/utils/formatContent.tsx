@@ -1,25 +1,23 @@
-import axios from "axios";
-
 export const formatTikTokLink = async (match: string): Promise<string> => {
     try {
-        // Send a request to the server-side proxy
-        const response = await axios.get(`https://tiktok-thumbnail-production.up.railway.app/api/tiktok?url=${encodeURIComponent(match)}`, {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36',
-                'Accept': 'application/json, text/plain, */*',
-            },
+        const response = await fetch('/api/tikTok', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url: match }),
         });
 
-        // Access the data directly from the response
-        const data = response.data; // No need for .json()
+        if (!response.ok) {
+            throw new Error('Failed to fetch data from API');
+        }
+
+        const data = await response.json();
 
         if (!data.success) {
-            throw new Error('Failed to fetch TikTok video data');
+            throw new Error(data.message || 'Failed to retrieve TikTok thumbnail');
         }
 
         const thumbnailUrl = data.thumbnail;
 
-        // Return the formatted HTML with the thumbnail if found
         return `
             <div class="mt-2">
                 <a href="${match}" target="_blank" rel="noopener noreferrer" class="block">
@@ -44,9 +42,10 @@ export const formatTikTokLink = async (match: string): Promise<string> => {
 
 export const formatImageLink = (match: string): string => {
     const cleanedMatch = match.replace(/^\[|\]$/g, '').trim();
-    return `<div class="mt-2">
-        <a href="${cleanedMatch}" target="_blank" rel="noopener noreferrer">
-            <img src="${cleanedMatch}" alt="Shared image" class="max-w-full h-auto rounded-lg shadow-md" />
-        </a>
-    </div>`;
+    return `
+        <div class="mt-2">
+            <a href="${cleanedMatch}" target="_blank" rel="noopener noreferrer">
+                <img src="${cleanedMatch}" alt="Shared image" class="max-w-full h-auto rounded-lg shadow-md" />
+            </a>
+        </div>`;
 };
