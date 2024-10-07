@@ -6,16 +6,26 @@ import { Button } from "@nextui-org/button";
 import ReadFile from "@/app/utils/ReadFile";
 import Modal from "./Modal";
 
+interface JsonContent {
+    people: string;
+    json: string;
+    me: string;
+}
+
+interface TextContent {
+    usernames: string[];
+    txtString: string;
+}
+
+// Allow ModalContent to be JsonContent or TextContent or null
+type ModalContent = JsonContent | TextContent | null;
+
 export default function Uploader() {
     const [isUploaderVisible, setUploaderVisible] = useState(false);
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [modalContent, setModalContent] = useState<{ people: string; json: string; me: string}>({
-        people: '',
-        json: '',
-        me: ''
-    });
+    const [modalContent, setModalContent] = useState<ModalContent>(null);
     const [isModalOpen, setModalOpen] = useState(false);
 
     const handleUploadClick = () => {
@@ -68,7 +78,6 @@ export default function Uploader() {
     };
 
     return (
-
         <main className="flex flex-col gap-8 row-start-2 items-center w-full">
             <Image
                 src="/images/mnemosyne-dirt.svg"
@@ -173,14 +182,13 @@ export default function Uploader() {
                             </Button>
                         </div>
                     )}
-
                 </div>
             )}
             <Modal
                 isOpen={isModalOpen}
                 onClose={closeModal}
-                result={modalContent}
-                filename={uploadedFile?.name || "user_data_tiktok.json"}
+                result={modalContent || { people: "", json: "", me: "" }}
+                filename={uploadedFile?.name || "user_data_tiktok"}
             />
         </main>
     );

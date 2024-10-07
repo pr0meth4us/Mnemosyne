@@ -6,7 +6,7 @@ import ExtractText from "@/app/utils/ExtractText";
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
-    result: { people: string, json: string, me: string };
+    result : | { people: string; json: string; me: string } | { usernames: string[]; txtString: string };
     filename: string;
 }
 
@@ -23,9 +23,16 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result, filename }) => {
 
     if (!isOpen) return null;
 
-    const content = result.people;
-    const jsonData = JSON.parse(content);
-    const chatList = jsonData.chatList || [];
+    const content = 'people' in result
+        ? result.people
+        : result.usernames;
+
+    console.log(content)
+
+    const chatList =
+        typeof content === 'string'
+            ? JSON.parse(content).chatList
+            : content
 
     const handleChatSelect = (chat: string) => {
         setSelectedChats((prev) =>
@@ -42,7 +49,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result, filename }) => {
     };
 
     const handleNext = () => {
-        const files = ExtractText(selectedChats, result.json, result.me);
+        const files = 'json' in result
+            ? ExtractText(selectedChats, result.json, result.me)
+            : chatList;
         setChatFiles(files);
         setShowDownloadButtons(true);
     };
@@ -92,7 +101,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result, filename }) => {
                 <div>
                     <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                            File: {filename} {/* Display the dynamic filename */}
+                            File: {filename}
                         </h3>
                         <button
                             onClick={onClose}
