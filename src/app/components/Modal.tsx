@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { Tooltip, Checkbox, Button } from "@nextui-org/react";
 import { cn } from "@nextui-org/react";
 import ExtractText from "@/app/utils/ExtractText";
+import { Input } from "@nextui-org/input";
 
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
-    result : | { people: string; json: string; me: string } | { usernames: string[]; txtString: string };
+    result: Data;
     filename: string;
 }
 
@@ -15,43 +16,44 @@ interface ChatFile {
     content: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result, filename }) => { // Accept filename prop
-    const [selectedChats, setSelectedChats] = useState<string[]>([]);
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result, filename }) => {
+    const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
     const [chatFiles, setChatFiles] = useState<ChatFile[]>([]);
     const [showDownloadButtons, setShowDownloadButtons] = useState(false);
     const [loadingPDFs, setLoadingPDFs] = useState<{ [key: string]: boolean }>({});
+    const [usernameInput, setUsernameInput] = useState(false);
+    const [username, setUsername] = useState(""); // Added missing username state
 
     if (!isOpen) return null;
 
-    const content = 'people' in result
-        ? result.people
-        : result.usernames;
-
-    console.log(content)
-
-    const chatList =
-        typeof content === 'string'
-            ? JSON.parse(content).chatList
-            : content
+    const { chatHistories, me, usernames } = result;
+    console.log("jui", usernames)
 
     const handleChatSelect = (chat: string) => {
-        setSelectedChats((prev) =>
+        setSelectedUsers((prev) =>
             prev.includes(chat) ? prev.filter((c) => c !== chat) : [...prev, chat]
         );
     };
 
     const selectAllChats = () => {
-        setSelectedChats(chatList);
+        setSelectedUsers(result.usernames);
     };
 
     const deselectAllChats = () => {
-        setSelectedChats([]);
+        setSelectedUsers([]);
     };
 
-    const handleNext = () => {
-        const files = 'json' in result
-            ? ExtractText(selectedChats, result.json, result.me)
-            : chatList;
+    const handleNext = async () => {
+        let files: ChatFile[] = [];
+
+        if (me) {
+            files = ExtractText({ selectedUsers, chatHistories, me });
+        } else {
+            setUsernameInput(true);
+            files = ExtractText({ selectedUsers, chatHistories, me });
+            setUsernameInput(false);
+
+        }
         setChatFiles(files);
         setShowDownloadButtons(true);
     };
@@ -129,24 +131,24 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result, filename }) => {
                                                 ),
                                                 label: "w-full text-white",
                                             }}
-                                            isSelected={selectedChats.length === chatList.length && chatList.length > 0}
+                                            isSelected={selectedUsers.length === result.usernames.length && result.usernames.length > 0} // Adjusted chatList
                                             onValueChange={() => {
-                                                if (selectedChats.length === chatList.length) {
+                                                if (selectedUsers.length === result.usernames.length) {
                                                     deselectAllChats();
                                                 } else {
                                                     selectAllChats();
                                                 }
                                             }}
                                         >
-                                            {selectedChats.length === chatList.length ? "Deselect All" : "Select All"}
+                                            {selectedUsers.length === result.usernames.length ? "Deselect All" : "Select All"}
                                         </Checkbox>
                                     </li>
                                 </ul>
                                 <ul className="my-4 space-y-3">
-                                    {chatList.map((chat: string, index: number) => (
+                                    {usernames.map((username: string, index: number) => (
                                         <li key={index} className="mt-1 text-white">
                                             <Checkbox
-                                                aria-label={chat}
+                                                aria-label={username}
                                                 classNames={{
                                                     base: cn(
                                                         "items-center justify-start text-white",
@@ -154,10 +156,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result, filename }) => {
                                                     ),
                                                     label: "w-full text-white",
                                                 }}
-                                                isSelected={selectedChats.includes(chat)}
-                                                onValueChange={() => handleChatSelect(chat)}
+                                                isSelected={selectedUsers.includes(username)}
+                                                onValueChange={() => handleChatSelect(username)}
                                             >
-                                                {chat.replace("Chat History with ", "").replace(":", "")}
+                                                {username.match(/with (.+?):/)?.[1] || username}
                                             </Checkbox>
                                         </li>
                                     ))}
@@ -173,47 +175,80 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result, filename }) => {
                                 </div>
                             </>
                         ) : (
-                            <>
-                                <h3 className="font-semibold text-md mt-4">Download Chat Histories:</h3>
-                                <ul className="my-4 space-y-3">
-                                    {chatFiles.map((file, index) => (
-                                        <li key={index} className="mt-1 flex gap-2 w-full relative">
-                                            <Button
-                                                variant="flat"
-                                                className="bg-foreground text-background px-4 py-2 rounded w-full text-center flex-grow"
-                                                onClick={() => handleDownload(file)}
-                                            >
-                                                {file.filename}.html
-                                            </Button>
-                                            <Tooltip
-                                                content={loadingPDFs[file.filename] ? "PDF may take a while to process" : ""}
-                                                isOpen={loadingPDFs[file.filename]}
-                                                key="default"
-                                                color="foreground"
-                                                placement="right"
-                                            >
+                            !usernameInput ? (
+                                <>
+                                    <h3 className="font-semibold text-md mt-4">Download Chat Histories:</h3>
+                                    <ul className="my-4 space-y-3">
+                                        {chatFiles.map((file, index) => (
+                                            <li key={index} className="mt-1 flex gap-2 w-full relative">
                                                 <Button
                                                     variant="flat"
                                                     className="bg-foreground text-background px-4 py-2 rounded w-full text-center flex-grow"
-                                                    onClick={() => handleDownloadPDF(file)}
-                                                    isLoading={loadingPDFs[file.filename]}
+                                                    onClick={() => handleDownload(file)}
                                                 >
-                                                    {file.filename}.pdf
+                                                    {file.filename}.html
                                                 </Button>
-                                            </Tooltip>
-                                        </li>
-                                    ))}
-                                </ul>
-                                <div className="flex justify-end w-full space-x-2">
-                                    <Button
-                                        variant="flat"
-                                        className="bg-foreground text-background px-4 py-2 rounded"
-                                        onClick={() => setShowDownloadButtons(false)}
-                                    >
-                                        Back
-                                    </Button>
-                                </div>
-                            </>
+                                                <Tooltip
+                                                    content={loadingPDFs[file.filename] ? "PDF may take a while to process" : ""}
+                                                    isOpen={loadingPDFs[file.filename]}
+                                                    key="default"
+                                                    color="foreground"
+                                                    placement="right"
+                                                >
+                                                    <Button
+                                                        variant="flat"
+                                                        className="bg-foreground text-background px-4 py-2 rounded w-full text-center flex-grow"
+                                                        onClick={() => handleDownloadPDF(file)}
+                                                        isLoading={loadingPDFs[file.filename]}
+                                                    >
+                                                        {file.filename}.pdf
+                                                    </Button>
+                                                </Tooltip>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                    <div className="flex justify-end w-full space-x-2">
+                                        <Button
+                                            variant="flat"
+                                            className="bg-foreground text-background px-4 py-2 rounded"
+                                            onClick={() => setShowDownloadButtons(false)}
+                                        >
+                                            Back
+                                        </Button>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <h3 className="font-semibold text-md my-4">Username</h3>
+                                    <div className="inline-flex items-baseline mb-4 text-sm text-default-500">
+                                        <p>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                 strokeWidth={1.5} stroke="currentColor"
+                                                 className="inline-block pr-1 w-4 h-4">
+                                                <path strokeLinecap="round" strokeLinejoin="round"
+                                                      d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+                                            </svg>
+                                            Type the username to proceed with
+                                        </p>
+                                    </div>
+                                    <Input
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                        type="text"
+                                        placeholder="Enter your username"
+                                        className="text-white bg-transparent border border-gray-600 rounded-md"
+                                    />
+                                    <div className="flex justify-end w-full space-x-2 mt-4">
+                                        <Button
+                                            variant="flat"
+                                            className="bg-foreground text-background px-4 py-2 rounded"
+                                            onClick={handleNext}
+                                        >
+                                            Next
+                                        </Button>
+                                    </div>
+                                </>
+                            )
                         )}
                     </div>
                 </div>

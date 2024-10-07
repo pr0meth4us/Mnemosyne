@@ -1,31 +1,21 @@
 "use client";
-
+import React from 'react';
 import Image from "next/image";
 import { useState } from "react";
 import { Button } from "@nextui-org/button";
 import ReadFile from "@/app/utils/ReadFile";
 import Modal from "./Modal";
 
-interface JsonContent {
-    people: string;
-    json: string;
-    me: string;
-}
-
-interface TextContent {
-    usernames: string[];
-    txtString: string;
-}
-
-// Allow ModalContent to be JsonContent or TextContent or null
-type ModalContent = JsonContent | TextContent | null;
-
 export default function Uploader() {
     const [isUploaderVisible, setUploaderVisible] = useState(false);
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [modalContent, setModalContent] = useState<ModalContent>(null);
+    const [modalContent, setModalContent] = useState<Data>({
+        chatHistories: {},
+        usernames: [],
+        me: "",
+    });
     const [isModalOpen, setModalOpen] = useState(false);
 
     const handleUploadClick = () => {
@@ -187,7 +177,7 @@ export default function Uploader() {
             <Modal
                 isOpen={isModalOpen}
                 onClose={closeModal}
-                result={modalContent || { people: "", json: "", me: "" }}
+                result={modalContent}
                 filename={uploadedFile?.name || "user_data_tiktok"}
             />
         </main>
