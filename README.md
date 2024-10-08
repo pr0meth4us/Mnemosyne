@@ -1,5 +1,7 @@
 # Mnemosyne: Keeper of Memories 
-[click here]('https://mnemosyne-hazel.vercel.app/')
+
+[Discover Mnemosyne Here](https://mnemosyne-hazel.vercel.app/)
+
 Mnemosyne is a web application that rescues disappearing conversations from TikTok by transforming them into HTML pages and PDFs. It keeps everything within your browser, without sending data to external servers or saving it to a permanent database.
 
 ## Features
@@ -10,7 +12,7 @@ Mnemosyne is a web application that rescues disappearing conversations from TikT
 
 ## Usage
 
-1. Go to https://mnemosyne-hazel.vercel.app/
+1. Visit the Mnemosyne app at https://mnemosyne-hazel.vercel.app.
 2. **Upload your file:** Click "Choose File" or drag and drop your TikTok data (JSON or TXT) into the app.
 3. **Transform your data:** Mnemosyne will convert your conversations into beautiful, readable formats:
     - HTML pages for browser viewing.
