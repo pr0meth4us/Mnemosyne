@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mnemosyne: Keeper of Memories
 
-## Getting Started
+Mnemosyne is a web application that rescues disappearing conversations from TikTok by transforming them into HTML pages and PDFs. It keeps everything within your browser, without sending data to external servers or saving it to a permanent database.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Client-side processing:** All files are processed on your device.
+- **TikTok conversation restoration:** Upload your TikTok data (JSON or TXT format) to retrieve and convert conversations into readable HTML pages or PDFs.
+- **Minimalistic user interface:** Built with NextUI and styled using Tailwind CSS for a modern, responsive experience.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Usage
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Upload your file:** Click "Choose File" or drag and drop your TikTok data (JSON or TXT) into the app.
+2. **Transform your data:** Mnemosyne will convert your conversations into beautiful, readable formats:
+    - HTML pages for browser viewing.
+    - PDFs for long-term preservation.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## How to Get TikTok Data
 
-## Learn More
+If you're unsure how to download your TikTok data in JSON or TXT format, [click here]('https://support.tiktok.com/en/account-and-privacy/personalized-ads-and-data/requesting-your-data') for instructions.
 
-To learn more about Next.js, take a look at the following resources:
+## Technologies Used
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **[Next.js](https://nextjs.org/)** – Web framework
+- **[NextUI](https://nextui.org/)** – Web Styling
+- **[DaisyUI](https://daisyui.com/)** – Web Styling
+- **[Tailwind CSS](https://tailwindcss.com/)** – Embedded in the generated HTML
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Acknowledgements
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Special thanks to:
+- **TikTok** for making the project necessary.
+- **Mnemosyne**, the Greek goddess of memory, for the inspiration.

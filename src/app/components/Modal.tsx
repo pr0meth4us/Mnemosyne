@@ -99,7 +99,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result, filename }) => {
     return (
         <div className="overflow-y-auto fixed inset-0 flex items-center justify-center z-50 w-full md:inset-0 h-[calc(100%-1rem)]">
             <div className="relative p-4 w-full max-w-md max-h-full">
-                <div>
                     <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                             File: {filename}
@@ -254,7 +253,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, result, filename }) => {
                         )}
                     </div>
                 </div>
-            </div>
         </div>
     );
 };
