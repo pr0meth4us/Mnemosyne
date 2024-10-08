@@ -36,7 +36,7 @@ export default function Instruction({ onTriggerUploader, isVisible }:Instruction
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-medium">
-                                        <strong>The Goddess's Sacred Promise:</strong>
+                                        <strong>The Goddess&#39;s Sacred Promise:</strong>
                                     </h3>
                                     <ul className="list-disc list-inside pl-4">
                                         <li><strong>Everything happens within your own device (browser).</strong></li>
@@ -46,7 +46,7 @@ export default function Instruction({ onTriggerUploader, isVisible }:Instruction
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-medium">
-                                        <strong>The Goddess's Gift:</strong>
+                                        <strong>The Goddess&#39;s Gift:</strong>
                                     </h3>
                                     <p>
                                         Mnemosyne <strong>rescues disappearing conversations from TikTok</strong>, giving them new life.
@@ -72,7 +72,7 @@ export default function Instruction({ onTriggerUploader, isVisible }:Instruction
                                         <strong>The Ritual Process:</strong>
                                     </h3>
                                     <ol className="list-decimal list-inside pl-4">
-                                        <li><strong>Upload your TikTok file: Click "Choose File" or drag and drop your JSON or TXT file.</strong></li>
+                                        <li><strong>Upload your TikTok file: Click &#34;Choose File&#34; or drag and drop your JSON or TXT file.</strong></li>
                                         <li><strong>Watch as Mnemosyne transforms your forgotten words</strong> into:
                                             <ul className="list-disc list-inside pl-4">
                                                 <li>Bright, readable <strong>HTML pages</strong> (best viewed on larger screens).</li>
