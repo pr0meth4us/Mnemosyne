@@ -19,7 +19,7 @@ export const formatTikTokLink = async (match: string): Promise<string> => {
                               <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
                                 <div class="w-16 h-16 rounded-full bg-white bg-opacity-50 flex items-center justify-center">
                                   <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
                                   </svg>
                                 </div>
                               </div>
@@ -35,6 +35,7 @@ export const formatTikTokLink = async (match: string): Promise<string> => {
                     </div>
                 </a>
             </div>`;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
         return `
             <div class="mt-2">
