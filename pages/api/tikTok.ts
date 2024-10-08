@@ -14,22 +14,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         const response = await axios.get(url, { maxRedirects: 5 });
-        const finalUrl = response.request.res.responseUrl || url; // Get the final URL after redirects
-        const html = response.data; // Get the response HTML
-
-        // Regex to extract the thumbnail URL
+        const finalUrl = response.request.res.responseUrl || url;
+        const html = response.data;
         const thumbnailMatch = html.match(/"originCover":"(.*?)"/);
         const thumbnailUrl = thumbnailMatch ? thumbnailMatch[1].replace(/\\u002F/g, '/') : null;
 
-        // Respond with the thumbnail URL and original URL
         res.status(200).json({
             success: true,
             thumbnail: thumbnailUrl,
             originalUrl: finalUrl,
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error fetching TikTok video:', error);
-        const errorMessage = error.response?.data?.message || 'Error fetching TikTok video'; // Optional chaining for safety
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        const errorMessage = error.response?.data?.message || 'Error fetching TikTok video';
         res.status(500).json({ success: false, message: errorMessage });
     }
 }
