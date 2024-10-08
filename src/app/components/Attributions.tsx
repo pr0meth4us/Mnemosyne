@@ -86,7 +86,7 @@ export default function Attributions({ isOpen, onOpen, onClose }: AttributionsPr
                             </li>
                             <li>
                                 <FaCoffee className="inline mr-1"/>
-                                <strong>Caffeine.js</strong> for turning "I can't even" into "I can odd AND even".
+                                <strong>Caffeine.js</strong>
                             </li>
                             <li>
                                 <FaBrain className="inline mr-1"/>
