@@ -11,6 +11,7 @@ type AttributionsProps = {
     onClose: () => void;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function Attributions({ isOpen, onOpen, onClose }: AttributionsProps) {
     return (
         <Modal backdrop="blur" scrollBehavior="inside" isOpen={isOpen} onClose={onClose} className="bg-dark">
