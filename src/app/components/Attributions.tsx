@@ -40,6 +40,9 @@ export default function Attributions({ isOpen, onOpen, onClose }: AttributionsPr
                                 <FaRobot className="inline mr-1"/>
                                 <strong>ChatGPT, Claude, and the whole AI gang</strong>
                             </li>
+                            <li className="text-4xl font-bold">
+                                Beyoncé
+                            </li>
                         </ul>
                     </div>
                     <div>
