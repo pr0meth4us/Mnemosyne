@@ -33,6 +33,4 @@ If you're unsure how to download your TikTok data in JSON or TXT format, [click 
 
 Special thanks to:
 
-- **My ex** for providing me with the immense motivation to create this (telepathically,
-  cuz like we on no contact).
 - **TikTok** for time bombing our texts.- **Mnemosyne**, the Greek goddess of memory, for the inspiration.

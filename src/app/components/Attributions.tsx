@@ -28,11 +28,6 @@ export default function Attributions({ isOpen, onOpen, onClose }: AttributionsPr
                         <p>Special thanks to:</p>
                         <ul className="list-disc list-inside pl-4">
                             <li>
-                                <strong>My ex</strong> for providing me with the immense motivation to create this
-                                (telepathically, <FaBrain className="inline ml-1" title="Telepathy in action"/> cuz like
-                                we on no contact).
-                            </li>
-                            <li>
                                 <strong>TikTok</strong> for time bombing our texts.
                             </li>
                             <li><strong>Mnemosyne</strong>, the Greek goddess of memory, for god knows what reason.</li>
@@ -91,10 +86,6 @@ export default function Attributions({ isOpen, onOpen, onClose }: AttributionsPr
                             <li>
                                 <FaCoffee className="inline mr-1"/>
                                 <strong>Caffeine.js</strong>
-                            </li>
-                            <li>
-                                <FaBrain className="inline mr-1"/>
-                                <strong>Telepathy.io</strong> for maintaining no-contact communication with that one ex (may cause uncontrollable urges to text).
                             </li>
                         </ul>
                     </div>
