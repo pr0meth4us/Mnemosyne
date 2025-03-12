@@ -2,7 +2,7 @@
 
 import { Button } from "@nextui-org/button";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/modal";
-import {FaGithub, FaBrain, FaCoffee, FaRobot} from 'react-icons/fa';
+import {FaGithub, FaCoffee, FaRobot} from 'react-icons/fa';
 import Image from "next/image";
 
 type AttributionsProps = {

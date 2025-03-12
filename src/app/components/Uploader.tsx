@@ -86,7 +86,7 @@ export default function Uploader({ isVisible, onTriggerUploader }: UploaderProps
                     >
                         <Image
                             className={`transition-transform fill-divine duration-500`}
-                            src="https://nextjs.org/icons/vercel.svg"
+                            src="https://res.cloudinary.com/dktzt7yn1/image/upload/v1741759193/logo-vercel_trrf97.svg"
                             alt="Vercel logomark"
                             width={20}
                             height={20}
